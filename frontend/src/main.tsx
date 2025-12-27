@@ -1,0 +1,14 @@
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './index.scss'
+
+import { Theme } from '@carbon/react';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <Theme theme="g100" style={{height: '100vh'}}>
+      <App />
+    </Theme>
+  </React.StrictMode>,
+)

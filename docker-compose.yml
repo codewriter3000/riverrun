@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: riverrun-postgres
+    environment:
+      POSTGRES_DB: riverrun
+      POSTGRES_USER: riverrun
+      POSTGRES_PASSWORD: riverrun
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - riverrun-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: riverrun-backend
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/riverrun
+      SPRING_DATASOURCE_USERNAME: riverrun
+      SPRING_DATASOURCE_PASSWORD: riverrun
+    ports:
+      - "8080:8080"
+    networks:
+      - riverrun-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: riverrun-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - riverrun-network
+
+volumes:
+  postgres-data:
+
+networks:
+  riverrun-network:
+    driver: bridge

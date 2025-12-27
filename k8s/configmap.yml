@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: riverrun-config
+  namespace: riverrun
+data:
+  DATABASE_URL: "jdbc:postgresql://postgres:5432/riverrun"
+  MULTI_TENANCY_ENABLED: "true"
+  DEPLOYMENT_MODE: "production"
+  DEFAULT_TENANT_ID: "00000000-0000-0000-0000-000000000001"
