@@ -40,7 +40,7 @@
 
     <changeSet id="003-add-tenant-id-to-users" author="riverrun">
         <addColumn tableName="users">
-            <column name="tenant_id" type="uuid" defaultValue="00000000-0000-0000-0000-000000000001">
+            <column name="tenant_id" type="uuid" defaultValueComputed="'00000000-0000-0000-0000-000000000001'::uuid">
                 <constraints nullable="false"/>
             </column>
         </addColumn>

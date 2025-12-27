@@ -50,7 +50,7 @@ public class FormValidationService {
 
             return ValidationResult.failure(errors);
 
-        } catch (ProcessingException | IOException e) {
+        } catch (ProcessingException e) {
             log.error("Error validating form data", e);
             return ValidationResult.failure(List.of("Schema validation error: " + e.getMessage()));
         }

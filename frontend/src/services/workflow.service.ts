@@ -2,7 +2,6 @@
 import api, { buildQueryString } from './api';
 import {
   WorkflowDefinition,
-  AvailableTransition,
 } from '../types/workflow.types';
 
 export const workflowService = {
@@ -33,3 +32,24 @@ export const workflowService = {
 
   /**
    * Create new workflow definition
+   */
+  create: async (workflow: Partial<WorkflowDefinition>): Promise<WorkflowDefinition> => {
+    const response = await api.post<WorkflowDefinition>('/workflows', workflow);
+    return response.data;
+  },
+
+  /**
+   * Update workflow definition
+   */
+  update: async (id: string, workflow: Partial<WorkflowDefinition>): Promise<WorkflowDefinition> => {
+    const response = await api.put<WorkflowDefinition>(`/workflows/${id}`, workflow);
+    return response.data;
+  },
+
+  /**
+   * Delete workflow definition
+   */
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/workflows/${id}`);
+  },
+};

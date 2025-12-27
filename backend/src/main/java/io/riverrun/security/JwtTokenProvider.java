@@ -28,24 +28,34 @@ public class JwtTokenProvider {
     @Value("${riverrun.jwt.expiration:86400000}") // 24 hours
     private long jwtExpiration;
 
+    @Value("${riverrun.jwt.expiration-remember-me:2592000000}") // 30 days
+    private long jwtExpirationRememberMe;
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateToken(UUID userId, String username, UUID tenantId) {
+        return generateToken(userId, username, tenantId, false);
+    }
+
+    public String generateToken(UUID userId, String username, UUID tenantId, boolean rememberMe) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId.toString());
         claims.put("tenantId", tenantId.toString());
-        return createToken(claims, username);
+        long expiration = rememberMe ? jwtExpirationRememberMe : jwtExpiration;
+        return createToken(claims, username, expiration);
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject, long expiration) {
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .claims()
+                    .add(claims)
+                    .subject(subject)
+                    .issuedAt(new Date(System.currentTimeMillis()))
+                    .expiration(new Date(System.currentTimeMillis() + expiration))
+                    .and()
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -76,11 +86,11 @@ public class JwtTokenProvider {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private Boolean isTokenExpired(String token) {

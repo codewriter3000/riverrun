@@ -4,7 +4,6 @@ import {
   CaseRequest,
   CaseResponse,
   CaseFilterParams,
-  CaseTransitionRequest,
 } from '../types/case.types';
 import { PageResponse } from '../types/common.types';
 
@@ -60,3 +59,9 @@ export const caseService = {
   },
 
   /**
+   * Delete case
+   */
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/cases/${id}`);
+  },
+};

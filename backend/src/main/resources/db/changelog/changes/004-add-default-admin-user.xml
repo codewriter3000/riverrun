@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="004-insert-default-roles" author="riverrun">
+        <!-- Insert default roles -->
+        <insert tableName="roles">
+            <column name="id" value="10000000-0000-0000-0000-000000000001"/>
+            <column name="name" value="ADMIN"/>
+            <column name="description" value="Administrator with full system access"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="10000000-0000-0000-0000-000000000002"/>
+            <column name="name" value="USER"/>
+            <column name="description" value="Standard user with basic access"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="005-insert-default-admin-user" author="riverrun">
+        <!-- Insert default admin user
+             Username: admin
+             Password: admin123
+             BCrypt hash for 'admin123': $2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a
+        -->
+        <insert tableName="users">
+            <column name="id" value="20000000-0000-0000-0000-000000000001"/>
+            <column name="username" value="admin"/>
+            <column name="email" value="admin@riverrun.io"/>
+            <column name="password_hash" value="$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a"/>
+            <column name="first_name" value="System"/>
+            <column name="last_name" value="Administrator"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="tenant_id" value="00000000-0000-0000-0000-000000000001"/>
+        </insert>
+
+        <!-- Assign ADMIN role to default admin user -->
+        <insert tableName="user_roles">
+            <column name="user_id" value="20000000-0000-0000-0000-000000000001"/>
+            <column name="role_id" value="10000000-0000-0000-0000-000000000001"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

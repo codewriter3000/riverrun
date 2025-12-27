@@ -26,32 +26,42 @@ public class AuthController {
     private final UserRepository userRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        log.debug("Login attempt for user: {}", request.getUsername());
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        log.info("Login attempt for user: {}", request.getUsername());
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()
+                    )
+            );
 
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            User user = userRepository.findByUsername(request.getUsername())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = jwtTokenProvider.generateToken(user.getId(), user.getUsername(), user.getTenantId());
+            log.info("User found: {}, enabled: {}, roles: {}, rememberMe: {}",
+                user.getUsername(), user.getEnabled(), user.getRoles().size(), request.isRememberMe());
 
-        AuthResponse response = AuthResponse.builder()
-                .token(token)
-                .userId(user.getId())
-                .username(user.getUsername())
-                .tenantId(user.getTenantId())
-                .roles(user.getRoles().stream()
-                        .map(role -> role.getName())
-                        .collect(Collectors.toList()))
-                .build();
+            String token = jwtTokenProvider.generateToken(user.getId(), user.getUsername(), user.getTenantId(), request.isRememberMe());
 
-        return ResponseEntity.ok(response);
+            AuthResponse response = AuthResponse.builder()
+                    .token(token)
+                    .userId(user.getId())
+                    .username(user.getUsername())
+                    .tenantId(user.getTenantId())
+                    .roles(user.getRoles().stream()
+                            .map(role -> role.getName())
+                            .collect(Collectors.toList()))
+                    .build();
+
+            log.info("Login successful for user: {}", request.getUsername());
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("Login failed for user: {}, error: {}", request.getUsername(), e.getMessage());
+            return ResponseEntity.status(401).body("Invalid username or password");
+        }
     }
 
     @GetMapping("/validate")

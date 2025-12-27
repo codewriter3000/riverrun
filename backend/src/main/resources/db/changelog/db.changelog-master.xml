@@ -8,5 +8,6 @@
     <include file="db/changelog/changes/001-initial-schema.xml"/>
     <include file="db/changelog/changes/002-add-tenancy-and-core-entities.xml"/>
     <include file="db/changelog/changes/003-add-audit-and-workflow.xml"/>
+    <include file="db/changelog/changes/004-add-default-admin-user.xml"/>
 
 </databaseChangeLog>

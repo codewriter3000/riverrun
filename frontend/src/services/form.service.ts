@@ -46,3 +46,21 @@ export const formService = {
    */
   update: async (id: string, data: Partial<FormSchemaRequest>): Promise<FormSchemaResponse> => {
     const response = await api.put<FormSchemaResponse>(`/forms/${id}`, data);
+    return response.data;
+  },
+
+  /**
+   * Delete form schema
+   */
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/forms/${id}`);
+  },
+
+  /**
+   * Validate form data
+   */
+  validate: async (data: FormValidationRequest): Promise<FormValidationResponse> => {
+    const response = await api.post<FormValidationResponse>('/forms/validate', data);
+    return response.data;
+  },
+};
