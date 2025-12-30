@@ -1,39 +1,98 @@
-import {
-  createMemoryRouter,
-  RouterProvider,
-  Outlet,
-} from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "./App.css";
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { AppLayout } from './components/layout/AppLayout';
+import { LoginPage } from './pages/LoginPage';
+import { DashboardPage } from './pages/DashboardPage';
+import { CasesPage } from './pages/CasesPage';
+import { TasksPage } from './pages/TasksPage';
+import { UnauthorizedPage } from './pages/UnauthorizedPage';
+import './App.css';
 
-import AuthPage from './components/AuthPage';
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-const queryClient = new QueryClient();
-
-// Layout component with navigation
-function Layout() {
-  return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Riverrun</h1>
-        <p>Medium-Code Case Management Framework</p>
-      </header>
-      <main className="app-main">
-        <Outlet />
-      </main>
-    </div>
-  );
-}
-
-// Create memory router
-const router = createMemoryRouter([
+// Router configuration
+const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Layout />,
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/unauthorized',
+    element: <UnauthorizedPage />,
+  },
+  {
+    path: '/',
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
-        element: <AuthPage />,
+        element: <Navigate to="/dashboard" replace />,
+      },
+      {
+        path: 'dashboard',
+        element: <DashboardPage />,
+      },
+      {
+        path: 'cases',
+        element: <CasesPage />,
+      },
+      {
+        path: 'cases/:id',
+        element: <div>Case Detail Page (TODO)</div>,
+      },
+      {
+        path: 'tasks',
+        element: <TasksPage />,
+      },
+      {
+        path: 'forms',
+        element: (
+          <ProtectedRoute requireRole="ADMIN">
+            <div>Forms Page (TODO)</div>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'workflows',
+        element: (
+          <ProtectedRoute requireRole="ADMIN">
+            <div>Workflows Page (TODO)</div>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'admin',
+        children: [
+          {
+            path: 'users',
+            element: (
+              <ProtectedRoute requireRole="ADMIN">
+                <div>Users Admin Page (TODO)</div>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'audit',
+            element: (
+              <ProtectedRoute requireRole="ADMIN">
+                <div>Audit Logs Page (TODO)</div>
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
     ],
   },
@@ -42,7 +101,9 @@ const router = createMemoryRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, MouseEvent } from 'react';
-
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
   Button,
   Checkbox,
@@ -12,19 +12,20 @@ import {
   Section,
   Stack,
   TextInput,
-} from "@carbon/react";
+} from '@carbon/react';
+import { useAuth } from '../hooks/useAuth';
+import { AxiosError } from 'axios';
 
-import { authService } from "../../services";
-import { AxiosError } from "axios";
+export const LoginPage: React.FC = () => {
+  const { isAuthenticated, login } = useAuth();
+  const navigate = useNavigate();
 
+  const invalidLoginErrorText = 'Invalid username and/or password';
+  const systemDownErrorText = 'The system appears to be down';
+  const [error, setError] = useState('');
 
-function AuthPage() {
-  const invalidLoginErrorText = "Invalid username and/or password";
-  const systemDownErrorText = "The system appears to be down";
-  const [error, setError] = useState("");
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) =>
@@ -33,32 +34,35 @@ function AuthPage() {
     setPassword(e.target.value);
   const handleRememberMeChange = () => setRememberMe((prevState) => !prevState);
 
-  const handleLogin = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleLogin = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    authService
-      .login({
-        username: username,
-        password: password,
-        rememberMe: rememberMe,
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err: AxiosError) => {
-        if (err.message === "Network Error") {
-          setError(systemDownErrorText);
-        } else if (err.message === "Request failed with status code 403") {
-          setError(invalidLoginErrorText);
-        }
+    setError('');
 
-        console.error(err);
-      });
+    try {
+      await login(username, password, rememberMe);
+      navigate('/dashboard');
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      if (axiosError.message === 'Network Error') {
+        setError(systemDownErrorText);
+      } else if (axiosError.response?.status === 401 || axiosError.response?.status === 403) {
+        setError(invalidLoginErrorText);
+      } else {
+        setError('An unexpected error occurred');
+      }
+      console.error(err);
+    }
   };
+
+  // If already authenticated, redirect to dashboard
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
     <Grid fullWidth>
       <Column lg={16} md={8} sm={4}>
-        {error != "" && (
+        {error !== '' && (
           <InlineNotification
             aria-label="login error"
             kind="error"
@@ -75,7 +79,7 @@ function AuthPage() {
                 id="username"
                 aria-label="username"
                 labelText="Username"
-                placeholder="karen.smith"
+                placeholder="admin"
                 onChange={handleUsernameChange}
                 value={username}
               />
@@ -102,6 +106,4 @@ function AuthPage() {
       </Column>
     </Grid>
   );
-}
-
-export default AuthPage;
+};

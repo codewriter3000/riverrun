@@ -7,7 +7,7 @@ import { Theme } from '@carbon/react';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Theme theme="g100" style={{height: '100vh'}}>
+    <Theme theme="g100">
       <App />
     </Theme>
   </React.StrictMode>,

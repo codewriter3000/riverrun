@@ -984,12 +984,12 @@ test('renders status badge with correct color', () => {
 ### Phase 1: Foundation
 - [X] Set up Carbon Design System
 - [X] Implement authentication (login, protected routes)
-- [ ] Create app shell (header, sidebar, layout)
+- [X] Create app shell (header, sidebar, layout)
 - [X] Set up routing
 - [X] Configure API client
 
 ### Phase 2: Core Features
-- [ ] Dashboard with metrics and recent items
+- [X] Dashboard with metrics and recent items
 - [ ] Case list with DataTable, search, filters, pagination
 - [ ] Case detail page with tabs (overview, tasks, history)
 - [ ] Case form (create/edit)
