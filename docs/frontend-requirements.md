@@ -185,7 +185,7 @@ frontend/src/
 2. Case Number (sortable, clickable link)
 3. Title (sortable)
 4. Status (use `Tag` - green for "Resolved", blue for "In Progress", gray for "New")
-5. Priority (use `Tag` - red for "High", yellow for "Medium", gray for "Low")
+5. Priority (use `Tag` - red for "High", blue for "Medium", green for "Low")
 6. Assigned To (user name)
 7. Due Date (sortable, formatted)
 8. Actions (OverflowMenu)
