@@ -30,7 +30,11 @@ import {
 import { Filter } from "@carbon/icons-react";
 import "./_styles.scss";
 
-const CaseList = () => {
+type CaseListProps = {
+  onEdit?: (caseId: string) => void;
+};
+
+const CaseList = ({ onEdit }: CaseListProps) => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [isLoading, setIsLoading] = useState(true);
@@ -183,6 +187,10 @@ const CaseList = () => {
       key: "dueDate",
       header: "Due Date",
     },
+    {
+      key: "actions",
+      header: "Actions",
+    }
   ];
 
   const statusOptions = [
@@ -232,6 +240,7 @@ const CaseList = () => {
           { header: "Priority" },
           { header: "Assigned To" },
           { header: "Due Date" },
+          { header: "Actions" },
         ]}
         showHeader={true}
         showToolbar={true}
@@ -282,30 +291,6 @@ const CaseList = () => {
                 </TableBatchActions>
                 <TableToolbarContent>
                   <TableToolbarSearch />
-                  <TableToolbarMenu>
-                    <FilterableMultiSelect
-                      id="status-filter"
-                      titleText="Status"
-                      items={statusOptions}
-                      itemToString={(item) => item?.label || ""}
-                      selectedItems={selectedStatuses}
-                      onChange={({ selectedItems }) =>
-                        setSelectedStatuses(selectedItems || [])
-                      }
-                      placeholder="Select statuses"
-                    />
-                    <FilterableMultiSelect
-                      id="priority-filter"
-                      titleText="Priority"
-                      items={priorityOptions}
-                      itemToString={(item) => item?.label || ""}
-                      selectedItems={selectedPriorities}
-                      onChange={({ selectedItems }) =>
-                        setSelectedPriorities(selectedItems || [])
-                      }
-                      placeholder="Select priorities"
-                    />
-                  </TableToolbarMenu>
                   <Button kind="primary">Add new</Button>
                 </TableToolbarContent>
               </TableToolbar>
@@ -337,6 +322,14 @@ const CaseList = () => {
                             <Tag type={getPriorityTagType(cell.value)}>
                               {cell.value}
                             </Tag>
+                          ) : cell.info.header === "actions" ? (
+                            <Button
+                              kind="ghost"
+                              size="sm"
+                              onClick={() => onEdit?.(row.id)}
+                            >
+                              Edit
+                            </Button>
                           ) : (
                             cell.value
                           )}

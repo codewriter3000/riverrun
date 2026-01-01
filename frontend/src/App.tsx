@@ -8,6 +8,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { CasesPage } from './pages/CasesPage';
 import { TasksPage } from './pages/TasksPage';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
+import { CaseDetails } from './pages/CaseDetails';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -51,7 +52,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'cases/:id',
-        element: <div>Case Detail Page (TODO)</div>,
+        element: <CaseDetails />,
       },
       {
         path: 'tasks',
@@ -107,7 +108,5 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-
 
 export default App;
