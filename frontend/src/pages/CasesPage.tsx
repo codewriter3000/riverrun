@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import CaseList from "../components/fragments/CaseList";
+import CaseList from "../components/cases/CaseList";
 
 export const CasesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ export const CasesPage: React.FC = () => {
   return (
     <div className="cases-page">
       <h1>Cases</h1>
-      <CaseList onEdit={handleEdit} />
+      <CaseList onDetails={handleEdit} />
     </div>
   );
 };

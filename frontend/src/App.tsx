@@ -8,7 +8,9 @@ import { DashboardPage } from './pages/DashboardPage';
 import { CasesPage } from './pages/CasesPage';
 import { TasksPage } from './pages/TasksPage';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
-import { CaseDetails } from './pages/CaseDetails';
+import { CaseDetailsPage } from './pages/CaseDetailsPage';
+import CaseForm from './components/cases/CaseForm';
+import CaseWorkflowDemoPage from './pages/CaseWorkflowDemoPage';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -52,7 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'cases/:id',
-        element: <CaseDetails />,
+        element: <CaseDetailsPage />,
       },
       {
         path: 'tasks',
@@ -94,6 +96,14 @@ const router = createBrowserRouter([
             ),
           },
         ],
+      },
+      {
+        path: 'cases/new',
+        element: <CaseForm />,
+      },
+      {
+        path: 'demo/workflow-panel',
+        element: <CaseWorkflowDemoPage />,
       },
     ],
   },

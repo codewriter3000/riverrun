@@ -192,11 +192,6 @@ frontend/src/
 
 **Toolbar Features:**
 - Search by case number or title
-- Filter button opening `FilterPanel`:
-  - Status dropdown (use `Dropdown`)
-  - Priority dropdown
-  - Assigned to me checkbox (use `Checkbox`)
-  - Date range picker (use `DatePicker` with range)
 - Create Case button (primary button)
 - Batch actions: Assign, Change Status, Delete
 

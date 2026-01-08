@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   TableContainer,
   DataTable,
@@ -31,16 +32,17 @@ import { Filter } from "@carbon/icons-react";
 import "./_styles.scss";
 
 type CaseListProps = {
-  onEdit?: (caseId: string) => void;
+  onDetails?: (caseId: string) => void;
 };
 
-const CaseList = ({ onEdit }: CaseListProps) => {
+const CaseList = ({ onDetails }: CaseListProps) => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [isLoading, setIsLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedStatuses, setSelectedStatuses] = useState<any[]>([]);
   const [selectedPriorities, setSelectedPriorities] = useState<any[]>([]);
+  const navigate = useNavigate();
 
   const getStatusTagType = (status: string) => {
     switch (status) {
@@ -291,7 +293,9 @@ const CaseList = ({ onEdit }: CaseListProps) => {
                 </TableBatchActions>
                 <TableToolbarContent>
                   <TableToolbarSearch />
-                  <Button kind="primary">Add new</Button>
+                  <Button kind="primary" onClick={() => navigate("/cases/new")}>
+                    Add new
+                  </Button>
                 </TableToolbarContent>
               </TableToolbar>
               <Table {...getTableProps()}>
@@ -326,9 +330,9 @@ const CaseList = ({ onEdit }: CaseListProps) => {
                             <Button
                               kind="ghost"
                               size="sm"
-                              onClick={() => onEdit?.(row.id)}
+                              onClick={() => onDetails?.(row.id)}
                             >
-                              Edit
+                              Details
                             </Button>
                           ) : (
                             cell.value

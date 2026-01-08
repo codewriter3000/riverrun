@@ -6,10 +6,11 @@ import {
   ComboBox, DatePicker, DatePickerInput
 } from "@carbon/react";
 import { Edit, TrashCan } from "@carbon/icons-react";
-import TaskList from "../components/fragments/TaskList";
-import AuditLogTable from "../components/fragments/AuditLogTable";
+import TaskList from "../components/tasks/TaskList";
+import AuditLogTable from "../components/audit/AuditLogTable";
+import { CaseWorkflowPanel } from "../components/cases/CaseWorkflowPanel";
 
-export const CaseDetails: React.FC = () => {
+export const CaseDetailsPage: React.FC = () => {
   const params = useParams();
   const caseId = params.id;
 
@@ -127,6 +128,7 @@ export const CaseDetails: React.FC = () => {
       <Tabs>
         <TabList>
           <Tab>Overview</Tab>
+          <Tab>Workflow</Tab>
           <Tab>Tasks {tasks.length > 0 ? `(${tasks.length})` : ""}</Tab>
           <Tab>History</Tab>
         </TabList>
@@ -288,6 +290,9 @@ export const CaseDetails: React.FC = () => {
                 </div>
               </Column>
             </Grid>
+          </TabPanel>
+          <TabPanel>
+            <CaseWorkflowPanel />
           </TabPanel>
           <TabPanel>
             <TaskList caseId={caseId} tasks={tasks} />
